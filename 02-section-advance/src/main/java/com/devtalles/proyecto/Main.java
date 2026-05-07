@@ -1,17 +1,71 @@
 package com.devtalles.proyecto;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+import java.util.ArrayList;
+import java.util.List;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
+public class Main {
+    public static void main(String[] args) {
+
+        Box<String> stringBox = new Box<>("Jose");
+
+        System.out.println(stringBox.getValue());
+
+        Box<Integer> integerBox = new Box<>(10);
+        System.out.println(integerBox.getValue());
+
+        System.out.println("\nDesde Utility");
+        Utility.printItem(integerBox);
+        Utility.printItem(stringBox, 2);
+
+        MathUtils.sum(2,2);
+        MathUtils.sum(2, 4);
+
+        List<String> names = new ArrayList<>();
+        names.add("Jose");
+        names.add("Julie");
+        names.add("Gabriel");
+
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(3);
+
+        printList(numbers);
+        printList(names);
+
+        sumNumbers(numbers);
+        addNumbers(numbers);
+        /*
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add("Jose");
+        list.add("Nico");
+
+        for(String name : list){
+            System.out.println(name.toUpperCase());
+        }*/
+    }
+
+    public static void printList(List<?> list){
+        for (Object o : list){
+            System.out.println(o);
         }
+    }
+
+    public static void sumNumbers(List<? extends Number> numbers){
+        double sum = 0;
+        for (Number number : numbers){
+            sum += number.doubleValue();
+        }
+        System.out.println("Sum: " + sum);
+    }
+
+    public static void addNumbers(List<? super Integer> numbers){
+        numbers.add(4);
+        numbers.add(5);
+        numbers.add(6);
+
+        Object num = numbers.get(0);
+        System.out.println(num);
     }
 }
