@@ -2,7 +2,7 @@ package com.devtalles.proyecto.record;
 
 import java.util.Objects;
 
-public record ProductDto(String name, double price, boolean nuevo) {
+public record ProductDto(String name, double price) {
 
     public static String ATRIBUTO ="HOLA";
 
@@ -11,7 +11,7 @@ public record ProductDto(String name, double price, boolean nuevo) {
     }
 
     public ProductDto(String name) {
-        this(name, 0, false);
+        this(name, 0);
     }
 
     public static void methodStatic(){
