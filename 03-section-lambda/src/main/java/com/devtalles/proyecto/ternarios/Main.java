@@ -30,7 +30,7 @@ public class Main {
 //            level = "Regular";
 //        }
 
-        level = score >= 90 ? "Excelente" : score>=70 ? "Bueno" : "Regular";
+        level = score >= 90 ? "Excelente" : score >= 70 ? "Bueno" : "Regular";
         System.out.println(level);
 
         int accessLevel = 2;

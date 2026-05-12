@@ -26,16 +26,16 @@ public class Main {
 interface Operation {
     int operate(int a, int b);
 
-    default String show(){
+    default String show() {
         return "Soy una operación";
     }
 
-    default String show2(){
+    default String show2() {
         return "Soy una operación";
     }
 
     //Expresion lambda
-    static Operation subtraction(){
+    static Operation subtraction() {
         return (a, b) -> a - b;
     }
 }

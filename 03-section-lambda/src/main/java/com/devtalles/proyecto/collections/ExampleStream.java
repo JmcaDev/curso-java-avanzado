@@ -16,14 +16,14 @@ public class ExampleStream {
         System.out.println(fruits);
         System.out.println(filterFruits);
 
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5,6,7,8,9);
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
         //Stream<Integer> integerStream = numbers.stream().map(n -> n * n);
         //List<Integer> numbersSquare = integerStream.toList();
         //System.out.println(numbers);
         //System.out.println(numbersSquare);
 
-        List<Integer> integerSquare = numbers.stream().map(n-> n*n).toList();
+        List<Integer> integerSquare = numbers.stream().map(n -> n * n).toList();
         System.out.println(numbers);
         System.out.println(integerSquare);
     }

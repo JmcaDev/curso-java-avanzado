@@ -20,13 +20,13 @@ public class ExampleStream {
         Stream<String> holaStream = Stream.generate(() -> "Hola mundo").limit(3);
         //holaStream.forEach(System.out::println);
 
-        List<String> names = List.of("Ana","Jose", "Miguel", "Castillo");
+        List<String> names = List.of("Ana", "Jose", "Miguel", "Castillo");
 
         //names.stream().filter(name -> name.length()>3)
         //        .map(name -> name.toUpperCase())
         //        .forEach(System.out::println);
 
-        Stream<String> stream1 = Stream.of("Ana","Jose", "Miguel", "Castillo");
+        Stream<String> stream1 = Stream.of("Ana", "Jose", "Miguel", "Castillo");
         stream1.forEach(System.out::println);
 
         List<String> strings = stream1.toList();

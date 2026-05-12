@@ -9,9 +9,9 @@ public class ConsumerExample {
         printUpper.accept("Buenos Dias");
 
         BiConsumer<String, Integer> repeat = (word, times) -> {
-          for(int i = 0; i < times; i++){
-              System.out.println(word);
-          }
+            for (int i = 0; i < times; i++) {
+                System.out.println(word);
+            }
         };
         repeat.accept("Hola", 3);
     }

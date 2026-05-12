@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class StreamMethodsExample {
     public static void main(String[] args) {
-        List<String> names = List.of("Ana","Jose", "Miguel", "Castillo", "Ana", "Fernando");
+        List<String> names = List.of("Ana", "Jose", "Miguel", "Castillo", "Ana", "Fernando");
         List<String> longNames = names.stream()
                 .filter(name -> name.length() > 3) // Filtra nombres de mas de 3 letras
                 .toList();
@@ -27,7 +27,7 @@ public class StreamMethodsExample {
         System.out.println(list);
         System.out.println(flatList);
 
-        List<Integer> numbers = List.of(3,1,3,5,2);
+        List<Integer> numbers = List.of(3, 1, 3, 5, 2);
         List<Integer> uniqueOrdered = numbers.stream()
                 .distinct()
                 .sorted()
