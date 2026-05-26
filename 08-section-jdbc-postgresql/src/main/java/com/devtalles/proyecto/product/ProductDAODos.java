@@ -2,18 +2,25 @@ package com.devtalles.proyecto.product;
 
 import com.devtalles.proyecto.db.ConnectionPool;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 //DAO = DATA ACCESS OBJECT
-public class ProductDAO {
+public class ProductDAODos {
+
+    private Connection getConnection() throws SQLException {
+        return ConnectionPool.getConnection();
+    }
 
     public void save(Product product) {
         String sql = "INSERT INTO products (name, price, stock) VALUES (?, ?, ?)";
 
         try (
-                Connection connection = ConnectionPool.getConnection();
+                Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ){
 
@@ -33,7 +40,7 @@ public class ProductDAO {
         String sql = "SELECT * FROM products";
         List<Product> products = new ArrayList<>();
         try (
-                Connection connection = ConnectionPool.getConnection();
+                Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
         ){
@@ -53,7 +60,7 @@ public class ProductDAO {
         String sql = "UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?";
 
         try (
-                Connection connection = ConnectionPool.getConnection();
+                Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ){
 
@@ -74,7 +81,7 @@ public class ProductDAO {
         String sql = "DELETE FROM products WHERE id = ?";
 
         try (
-                Connection connection = ConnectionPool.getConnection();
+                Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ){
 
