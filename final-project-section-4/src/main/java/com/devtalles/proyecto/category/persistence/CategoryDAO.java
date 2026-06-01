@@ -11,34 +11,33 @@ import java.util.List;
 import java.util.Optional;
 
 public class CategoryDAO {
-    private final Connection connection;
 
-    public CategoryDAO(Connection connection) {
-        this.connection = connection;
-    }
-
-    public Category save(Category category) throws SQLException {
+    public Optional<Category> save(Connection connection, Category category) throws SQLException {
         String sql = "INSERT INTO categories (name) VALUES (?) RETURNING id";
 
         try(
-                PreparedStatement statement = connection.prepareStatement(sql);
+                PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         ){
             statement.setString(1, category.getName());
+            int rows =  statement.executeUpdate();
 
-            try(ResultSet resultSet = statement.executeQuery()){
-                if(resultSet.next()){
-                    long id = resultSet.getLong("id");
-                    category.setId(id);
-                    System.out.println("Categoria Creada con exito");
+            if(rows>0){
+                try(ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if(resultSet.next()){
+                        long id = resultSet.getLong(1);
+                        category.setId(id);
+                        return Optional.of(category);
+                    }
                 }
+                System.out.println("Categoria guardada exitosamente!");
             }
-
+        } catch (SQLException e) {
+            System.out.println("Error al insertar la categoria: " + e.getMessage());
         }
-
-        return category;
+        return Optional.empty();
     }
 
-    public List<Category> findAll() throws SQLException {
+    public List<Category> findAll(Connection connection) throws SQLException {
         String sql = "SELECT * FROM categories";
         List<Category> categories = new ArrayList<>();
 
@@ -55,9 +54,8 @@ public class CategoryDAO {
         return  categories;
     }
 
-    public Optional<Category> findById(Long id) throws SQLException {
+    public Optional<Category> findById(Connection connection, Long id) throws SQLException {
         String sql = "SELECT * FROM categories WHERE id = ?";
-        Category category = null;
 
         try(
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -73,7 +71,24 @@ public class CategoryDAO {
         return  Optional.empty();
     }
 
-    public void update(Category category){
+    public Optional<Category> findCategoryByName(Connection connection, String categoryName) throws SQLException {
+        String sql = "SELECT * FROM categories WHERE name = ?";
+
+        try(
+                PreparedStatement statement = connection.prepareStatement(sql);
+        ){
+            statement.setString(1, categoryName);
+            try(ResultSet resultSet = statement.executeQuery();){
+                if(resultSet.next()){
+                    return Optional.of(mapResult(resultSet));
+                }
+            }
+
+        }
+        return  Optional.empty();
+    }
+
+    public void update(Connection connection, Category category){
         String sql = "UPDATE categories SET name = ? WHERE id = ?";
 
         try(
@@ -89,7 +104,7 @@ public class CategoryDAO {
         }
     }
 
-    public void delete(Long id){
+    public void delete(Connection connection, Long id){
         String sql = "DELETE FROM categories WHERE id = ?";
 
         try(
