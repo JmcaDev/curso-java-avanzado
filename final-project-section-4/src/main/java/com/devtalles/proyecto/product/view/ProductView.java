@@ -1,11 +1,13 @@
 package com.devtalles.proyecto.product.view;
 
+import com.devtalles.proyecto.category.model.Category;
 import com.devtalles.proyecto.product.controller.ProductController;
 import com.devtalles.proyecto.product.exceptions.InvalidProductException;
 import com.devtalles.proyecto.product.exceptions.ProductNotFoundException;
 import com.devtalles.proyecto.product.model.Product;
 import com.devtalles.proyecto.product.model.ProductCategory;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -49,21 +51,20 @@ public class ProductView {
 
     private void addProduct(){
         try {
-            long productId = readValidLong("Ingrese el ID del producto: ", 0);
             String productName = readNonEmptyString("Ingrese el nombre del producto: ");
             double productPrice = readValidDouble("Ingrese el precio del producto: ", 1);
             int productStock = readValidInteger("Ingrese el stock del producto: ", 1);
-            String productCategory = readValidCategory("Ingrese la categoria del producto: " +
-                    "\nELECTRÓNICOS, COMIDAS, LIBROS, OTROS");
-            ProductCategory category = ProductCategory.valueOf(productCategory.trim().toUpperCase());
-
-            Product product = new Product(productId, productName, productPrice, productStock, category);
+            String categoryName = readNonEmptyString("Ingrese el nombre de la categoria: ");
+            Category category = new Category(categoryName.trim().toUpperCase());
+            Product product = new Product(productName, productPrice, productStock, category);
             productController.addProduct(product);
 
         } catch (InvalidProductException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("La categoria no existe");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -95,7 +96,7 @@ public class ProductView {
         try {
             long id = readValidLong("Ingrese el ID del producto: ", 0);
             productController.removeProduct(id);
-        }catch (ProductNotFoundException | InvalidProductException e) {
+        }catch (ProductNotFoundException | InvalidProductException | SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -103,7 +104,7 @@ public class ProductView {
     private void updateProduct(){
         try {
             long id = readValidLong("Ingrese el ID del producto: ", 0);
-            Optional<Product> product = productController.getProductById(id);
+            Optional<Product> product = productController.getProductByIdDB(id);
             if(product.isPresent()){
                 System.out.println("Producto a MODIFICAR");
                 Product product1 = product.get();
@@ -123,17 +124,17 @@ public class ProductView {
                     case 2 -> product.get().setPrice(readValidDouble("Ingrese el nuevo precio del producto: ", 1));
                     case 3 -> product.get().setStock(readValidInteger("Ingrese el nuevo stock del producto: ", 1));
                     case 4 -> {
-                        String categoryString = readValidCategory("Ingrese la categoria del producto: " +
-                                "\nELECTRÓNICOS, COMIDAS, LIBROS, OTROS");
-                        product.get().setCategory(ProductCategory.valueOf(categoryString));
+                        String categoryName = readNonEmptyString("Ingrese el nombre de la categoria: ");
+                        Category category = new Category(categoryName.trim().toUpperCase());
+                        product.get().setCategory(category);
                     }
                     case 5 -> {
                         product.get().setName(readNonEmptyString("Ingrese el nuevo nombre del producto: "));
                         product.get().setPrice(readValidDouble("Ingrese el nuevo precio del producto: ", 1));
                         product.get().setStock(readValidInteger("Ingrese el nuevo stock del producto: ", 1));
-                        String categoryString = readValidCategory("Ingrese la categoria del producto: " +
-                                "\nELECTRÓNICOS, COMIDAS, LIBROS, OTROS");
-                        product.get().setCategory(ProductCategory.valueOf(categoryString));
+                        String categoryName = readNonEmptyString("Ingrese el nombre de la categoria: ");
+                        Category category = new Category(categoryName.trim().toUpperCase());
+                        product.get().setCategory(category);
                     }
                     case 6 -> {
                         return;
@@ -143,7 +144,7 @@ public class ProductView {
             }else{
                 System.out.println("El producto no se encuentra en la BD");
             }
-        } catch (ProductNotFoundException | InvalidProductException e) {
+        } catch (ProductNotFoundException | InvalidProductException | SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }

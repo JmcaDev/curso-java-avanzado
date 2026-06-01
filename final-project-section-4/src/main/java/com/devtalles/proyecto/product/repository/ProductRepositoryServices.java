@@ -1,17 +1,36 @@
 package com.devtalles.proyecto.product.repository;
 
+import com.devtalles.proyecto.category.persistence.CategoryDAO;
+import com.devtalles.proyecto.db.ConnectionPool;
 import com.devtalles.proyecto.product.exceptions.InvalidProductException;
 import com.devtalles.proyecto.product.exceptions.ProductNotFoundException;
 import com.devtalles.proyecto.product.interfaces.ProductRepository;
 import com.devtalles.proyecto.product.model.Product;
+import com.devtalles.proyecto.product.model.ProductCategory;
+import com.devtalles.proyecto.product.persistence.ProductDAO;
+import lombok.Getter;
 
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 public class ProductRepositoryServices implements ProductRepository {
 
-    private final List<Product> products = new ArrayList<>();
+    private final List<Product> products;
+    private final ProductDAO productDAO;
+    private final CategoryDAO categoryDAO;
+
+    public ProductRepositoryServices(CategoryDAO categoryDAO) throws SQLException, InvalidProductException {
+        productDAO = new ProductDAO(categoryDAO);
+        this.categoryDAO = categoryDAO;
+        try(Connection connection = ConnectionPool.getConnection();){
+            products = productDAO.findAll(connection);
+        }catch (SQLException e){
+            throw new InvalidProductException("Error al inicializar la lista: " + e.getMessage());
+        }
+    }
 
     @Override
     public List<Product> findAll() throws InvalidProductException {
@@ -29,23 +48,38 @@ public class ProductRepositoryServices implements ProductRepository {
                 .findFirst();
     }
 
-    @Override
-    public void save(Product product) {
-        products.add(product);
+    public Optional<Product> findByIdDB(Connection connection, Long id) throws SQLException {
+        return productDAO.findById(connection, id);
     }
 
     @Override
-    public void delete(Long id) {
+    public Product save(Connection connection,Product product) throws SQLException {
+        Product newProduct = productDAO.save(connection, product);
+        products.add(newProduct);
+        return newProduct;
+    }
+
+    @Override
+    public void delete(Connection connection, Long id) throws SQLException {
         products.removeIf(p -> p.getId().equals(id));
+        productDAO.delete(connection, id);
     }
 
     @Override
-    public void update(Optional<Product> product) throws ProductNotFoundException {
+    public List<Product> findByCategory(ProductCategory category) {
+        return products.stream()
+                .filter(product -> product.getCategory().equals(category))
+                .toList();
+    }
+
+    @Override
+    public void update(Connection connection, Optional<Product> product) throws ProductNotFoundException, SQLException {
         if(product.isPresent()) {
             Long idToUpdate = product.get().getId();
             int index = findIndexById(idToUpdate);
             if(index != -1){
                 products.set(index, product.get());
+                productDAO.update(connection, product.get());
             }else{
                 throw new ProductNotFoundException("El producto que quiere actualizar no existe");
             }
