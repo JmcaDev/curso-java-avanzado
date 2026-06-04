@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Nuestro CV</h1>
+    <form th:object="${cvData}">
+        <h2>Detalles Personales</h2>
+        <div>
+            <label for="firstName">Nombre:</label>
+            <input type="text" id="firstName" th:field="*{personalDetails.firstName}"/>
+        </div>
+
+        <div>
+            <label for="lastName">Apellido:</label>
+            <input type="text" id="lastName" th:field="*{personalDetails.lastName}" />
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{personalDetails.email}"  />
+        </div>
+
+        <div>
+            <label for="phone">Teléfono:</label>
+            <input type="text" id="phone" th:field="*{personalDetails.phone}"  />
+        </div>
+
+        <div>
+            <label for="address">Dirección:</label>
+            <input type="text" id="address" th:field="*{personalDetails.address}"  />
+        </div>
+
+        <div>
+            <label for="city">Ciudad:</label>
+            <input type="text" id="city" th:field="*{personalDetails.city}"  />
+        </div>
+
+        <div>
+            <label for="province">Provincia:</label>
+            <input type="text" id="province" th:field="*{personalDetails.province}"  />
+        </div>
+
+        <div>
+            <label for="postalCode">Código Postal:</label>
+            <input type="text" id="postalCode" th:field="*{personalDetails.postalCode}"  />
+        </div>
+
+        <div>
+            <label for="professionalProfile">Perfil Profesional:</label>
+            <textarea id="professionalProfile" rows="5" th:field="*{personalDetails.professionalProfile}" ></textarea>
+        </div>
+
+        <hr/>
+
+        <h2>Educación</h2>
+        <div th:each="education, stat : ${cvData.educations}">
+            <div>
+                <label>Institución:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].institution}" />
+            </div>
+            <div>
+                <label>Título:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].degree}" />
+            </div>
+            <div>
+                <label>Período:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].period}" />
+            </div>
+            <div>
+                <label>Descripción:</label>
+                <textarea rows="3" th:field="*{educations[__${stat.index}__].description}"></textarea>
+            </div>
+        </div>
+
+        <hr/>
+
+    </form>
+</body>
+</html>
