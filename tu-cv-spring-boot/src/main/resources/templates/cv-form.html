@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>CV-Form</title>
+    <link rel="stylesheet" th:href="@{/css/form-style.css}">
 </head>
 <body>
     <h1>Nuestro CV</h1>
-    <form th:object="${cvData}">
+    <form th:object="${cvData}" method="post" th:action="@{/generate-cv}">
         <h2>Detalles Personales</h2>
         <div>
             <label for="firstName">Nombre:</label>
@@ -57,27 +58,68 @@
         <hr/>
 
         <h2>Educación</h2>
-        <div th:each="education, stat : ${cvData.educations}">
+        <div th:each="education, stat : *{educations}">
+            <h3>Educación <span th:text="${stat.index + 1}"></span></h3>
             <div>
-                <label>Institución:</label>
-                <input type="text" th:field="*{educations[__${stat.index}__].institution}" />
+                <label th:for="${'education_institution_' + stat.index}">Institución:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].institution}" th:id="${'education_institution_' + stat.index}" />
             </div>
             <div>
-                <label>Título:</label>
-                <input type="text" th:field="*{educations[__${stat.index}__].degree}" />
+                <label th:for="${'education_title_' + stat.index}">Título:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].degree}" th:id="${'education_title_' + stat.index}"/>
             </div>
             <div>
-                <label>Período:</label>
-                <input type="text" th:field="*{educations[__${stat.index}__].period}" />
+                <label th:for="${'education_period_' + stat.index}">Período:</label>
+                <input type="text" th:field="*{educations[__${stat.index}__].period}" th:id="${'education_period_' + stat.index}"/>
             </div>
             <div>
-                <label>Descripción:</label>
-                <textarea rows="3" th:field="*{educations[__${stat.index}__].description}"></textarea>
+                <label th:for="${'education_description_' + stat.index}">Descripción:</label>
+                <textarea rows="3" th:field="*{educations[__${stat.index}__].description}" th:id="${'education_description_' + stat.index}"></textarea>
             </div>
+            <hr th:if="${!stat.last}"/>
         </div>
 
         <hr/>
 
+        <h2>Experiencia</h2>
+        <div th:each="experience, stat : *{experiences}">
+            <h3>Experiencia <span th:text="${stat.index + 1}"></span></h3>
+            <div>
+                <label th:for="${'experience_jobTitle_' + stat.index}">Nombre del cargo:</label>
+                <input type="text" th:field="*{experiences[__${stat.index}__].jobTitle}" th:id="${'experience_jobTitle_' + stat.index}"/>
+            </div>
+            <div>
+                <label th:for="${'experience_company_' + stat.index}">Empresa:</label>
+                <input type="text" th:field="*{experiences[__${stat.index}__].company}" th:id="${'experience_company_' + stat.index}"/>
+            </div>
+            <div>
+                <label th:for="${'experience_period_' + stat.index}">Período:</label>
+                <input type="text" th:field="*{experiences[__${stat.index}__].period}" th:id="${'experience_period_' + stat.index}"/>
+            </div>
+            <div>
+                <label th:for="${'experience_description_' + stat.index}">Descripción:</label>
+                <textarea rows="3" th:field="*{experiences[__${stat.index}__].description}" th:id="${'experience_description_' + stat.index}"></textarea>
+            </div>
+            <hr th:if="${!stat.last}"/>
+        </div>
+
+        <hr/>
+
+        <h2>Habilidades</h2>
+        <div th:each="skill, stat : *{skills}">
+            <h3>Habilidad <span th:text="${stat.index + 1}"></span></h3>
+            <div>
+                <label th:for="${'skill_name_' + stat.index}">Habilidad:</label>
+                <input type="text" th:field="*{skills[__${stat.index}__].name}" th:id="${'skill_name_' + stat.index}"/>
+            </div>
+            <div>
+                <label th:for="${'skill_level_' + stat.index}">Nivel:</label>
+                <input type="text" th:field="*{skills[__${stat.index}__].level}" th:id="${'skill_level_' + stat.index}"/>
+            </div>
+            <hr th:if="${!stat.last}"/>
+        </div>
+        <br/>
+        <button type="submit">Generar/Actualizar CV</button>
     </form>
 </body>
 </html>
